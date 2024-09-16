@@ -1,10 +1,10 @@
-﻿@model Employee
+﻿@model EmployeeViewModel
 @{
     ViewData["Title"] = "Create";
 }
 
 <h3>Add New Employee</h3>
-<form class="form" asp-action="Create">
+<form class="form" asp-action="Create" enctype="multipart/form-data">
     @* <div asp-validation-summary="All"></div> *@
     <partial name="PartialViews/_CreateEditPartial"></partial>
   

@@ -20,22 +20,19 @@ namespace BusinessLogicLayer.Repositories
 
         public IEnumerable<TEntity> GetAll() => _dbset.ToList();
 
-        public int create(TEntity entity)
+        public void create(TEntity entity)
         {
             _dbset.Add(entity);
-            return _context.SaveChanges();
         }
 
-        public int Update(TEntity entity)
+        public void Update(TEntity entity)
         {
             _dbset.Update(entity);
-            return _context.SaveChanges();
         }
 
-        public int Delete(TEntity entity)
+        public void Delete(TEntity entity)
         {
             _dbset.Remove(entity);
-            return _context.SaveChanges();
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿@model Employee
+﻿@model EmployeeViewModel
 @{
     ViewData["Title"] = "Edit";
 }
+ @* @TempData["Message"]; *@
 
 <h3>Edit @Model.Name</h3>
-<form method="post" class="form" asp-action="Edit">
+<form method="post" class="form" asp-action="Edit" enctype="multipart/form-data">
     @* <div asp-validation-summary="All"></div> *@
 
     <partial name="PartialViews/_CreateEditPartial"></partial>

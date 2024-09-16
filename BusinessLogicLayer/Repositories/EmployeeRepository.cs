@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Data;
 using DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,28 +18,8 @@ namespace BusinessLogicLayer.Repositories
         {
         }
 
-    //    public int create(Employee entity)
-    //    {
-    //        _context.Add(entity);
-    //        return _context.SaveChanges();
-    //    }
-
-    //    public int Delete(Employee entity)
-    //    {
-    //        _context.Remove(entity);
-    //        return _context.SaveChanges();
-    //    }
-
-       public IEnumerable<Employee> GetAll(string Address) => _dbset.Where(e => e.Address.ToLower() == Address.ToLower()).ToList();
-
-    //    public IEnumerable<Employee> GetAll() => _context.Employees.ToList();
-
-    //    public Employee? GetEmployee(int id) => _context.Employees.Find(id);
-
-    //    public int Update(Employee entity)
-    //    {
-    //        _context.Update(entity);
-    //        return _context.SaveChanges();
-    //    }
+        public IEnumerable<Employee> GetAll(string name) => _dbset.Where(e => e.Name.ToLower().Contains( name.ToLower())).Include(e => e.Department).ToList();
+        public IEnumerable<Employee> GetAllWithDepartments() => _dbset.Include(e => e.Department).Include(e=>e.Department).ToList();
+      
     }
 }

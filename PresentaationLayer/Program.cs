@@ -1,8 +1,3 @@
-using BusinessLogicLayer.Interfaces;
-using BusinessLogicLayer.Repositories;
-using DataAccessLayer.Data;
-using DataAccessLayer.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace PresentaationLayer
 {
@@ -21,6 +16,8 @@ namespace PresentaationLayer
             //builder.Services.AddScoped<IGenericRepository<Department>, GenericRepositiry<Department>>();
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
