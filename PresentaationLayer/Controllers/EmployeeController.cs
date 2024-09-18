@@ -1,12 +1,9 @@
 ﻿
-
-using PresentationLayer.Utilities;
-
 namespace PresentationLayer.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -17,6 +14,7 @@ namespace PresentationLayer.Controllers
         }
         [HttpGet]
         [IgnoreAntiforgeryToken]
+        [AllowAnonymous]
         public IActionResult Index(string? searchName)
         {
             var employees = Enumerable.Empty<Employee>();
@@ -37,7 +35,6 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public IActionResult Create(EmployeeViewModel employeeVM)
         {
             if (ModelState.IsValid)
@@ -95,7 +92,6 @@ namespace PresentationLayer.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-
         public IActionResult ConfirmDelete(int? id)
         {
             if (!id.HasValue) return BadRequest();

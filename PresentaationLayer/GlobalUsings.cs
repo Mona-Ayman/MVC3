@@ -10,4 +10,9 @@ global using BusinessLogicLayer.Repositories;
 global using DataAccessLayer.Data;
 global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
- 
+global using Microsoft.AspNetCore.Identity;
+global using PresentaationLayer.Controllers;
+global using PresentationLayer.Utilities;
+global using Microsoft.AspNetCore.Authorization;
+global using System.Net.Mail;
+global using System.Net;

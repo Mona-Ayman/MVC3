@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Identity;
+
 namespace PresentaationLayer
 {
     public class Program
@@ -18,6 +20,7 @@ namespace PresentaationLayer
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
+            builder.Services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
