@@ -5,6 +5,6 @@ namespace BusinessLogicLayer.Interfaces
     {
         public  IEmployeeRepository Employees { get; }
         public  IDepartmentRepository Departments { get; }
-        public int SaveChanges();
+        public Task<int> SaveChangesAsync();
     }
 }

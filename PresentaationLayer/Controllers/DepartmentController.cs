@@ -14,9 +14,9 @@ namespace PresentationLayer.Controllers
             _DeptRepo = DeptRepo;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments = _DeptRepo.GetAll();
+            var departments = await _DeptRepo.GetAllAsync();
             return View(departments);
         }
 
@@ -28,13 +28,13 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Create(Department department)
+        public async Task<IActionResult> Create(Department department)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _DeptRepo.create(department);
+                   await _DeptRepo.createAsync(department);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -45,8 +45,8 @@ namespace PresentationLayer.Controllers
             return View(department);
         }
 
-        public IActionResult Details(int? id) => DepartmentControleerHandler(id, nameof(Details));
-        public IActionResult Edit(int? id) => DepartmentControleerHandler(id, nameof(Edit));
+        public async Task<IActionResult> Details(int? id) => await DepartmentControleerHandlerAsync(id, nameof(Details));
+        public async Task<IActionResult> Edit(int? id) => await DepartmentControleerHandlerAsync(id, nameof(Edit));
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -68,17 +68,17 @@ namespace PresentationLayer.Controllers
             return View(department);
         }
 
-        public IActionResult Delete(int? id) => DepartmentControleerHandler(id,nameof(Delete));
+        public async Task<IActionResult> Delete(int? id) => await DepartmentControleerHandlerAsync(id, nameof(Delete));
        
 
 
         [HttpPost ,ActionName("Delete")]
         [ValidateAntiForgeryToken]
 
-        public IActionResult ConfirmDelete(int? id)
+        public async Task<IActionResult> ConfirmDelete(int? id)
         {
             if (!id.HasValue) return BadRequest();
-            var department =_DeptRepo.Get(id.Value);
+            var department =await _DeptRepo.GetAsync(id.Value);
             if (department == null) return NotFound();
             try
             {
@@ -92,10 +92,10 @@ namespace PresentationLayer.Controllers
             return View(department);
         }
 
-        public IActionResult DepartmentControleerHandler(int? id , string ViewName)
+        public async Task<IActionResult> DepartmentControleerHandlerAsync(int? id , string ViewName)     //ممكن دي بس اللي اخلي اخرها اسينك لانها برايفت
         {
             if (!id.HasValue) return BadRequest();
-            var department = _DeptRepo.Get(id.Value);
+            var department = await _DeptRepo.GetAsync(id.Value);
             if (department == null) return NotFound();
             return View(ViewName, department);
         }

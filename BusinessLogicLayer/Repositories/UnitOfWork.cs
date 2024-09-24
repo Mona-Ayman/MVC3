@@ -16,9 +16,9 @@ namespace BusinessLogicLayer.Repositories
             _deptrepo = new Lazy<IDepartmentRepository>(() => new DepartmentRepository(context));
             _context = context;
         }
-        public int SaveChanges()
+        public async Task<int> SaveChangesAsync()
         {
-          return  _context.SaveChanges();
+          return await  _context.SaveChangesAsync();
         }
         public IEmployeeRepository Employees => _emprepo.Value;
         public IDepartmentRepository Departments => _deptrepo.Value;

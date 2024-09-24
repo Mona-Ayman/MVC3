@@ -1,16 +1,17 @@
-﻿@model Department
+﻿@model RoleViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
+ @* @TempData["Message"]; *@
 
-<h3>Add New Department</h3>
-<form class="form" asp-action="Create">
+<form method="post" class="form" asp-action="Edit" enctype="multipart/form-data">
     @* <div asp-validation-summary="All"></div> *@
-
     <partial name="PartialViews/_CreateEditPartial"></partial>
-
     <div class="mt-3">
-        <button class="btn btn-success">Save</button>
+        <a class="btn btn-info" asp-action="AddOrRemoveUserRoles" asp-route-roleId="@Model.Id">Add Or Remove Users</a>
+    </div>
+    <div class="mt-3">
+        <button class="btn btn-success">Update</button>
         <a class="btn btn-danger" asp-action="Index">Cancel</a>
     </div>
 </form>

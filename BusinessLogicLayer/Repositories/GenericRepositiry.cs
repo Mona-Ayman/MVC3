@@ -16,13 +16,13 @@ namespace BusinessLogicLayer.Repositories
             _dbset = _context.Set<TEntity>();
         }
 
-        public TEntity? Get(int id) => _dbset.Find(id);
+        public async Task<TEntity?> GetAsync(int id) => await _dbset.FindAsync(id);
 
-        public IEnumerable<TEntity> GetAll() => _dbset.ToList();
+        public async Task<IEnumerable<TEntity>> GetAllAsync() => await _dbset.ToListAsync();
 
-        public void create(TEntity entity)
+        public async Task createAsync(TEntity entity)
         {
-            _dbset.Add(entity);
+           await _dbset.AddAsync(entity);
         }
 
         public void Update(TEntity entity)

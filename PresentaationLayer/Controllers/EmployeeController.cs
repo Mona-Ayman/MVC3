@@ -1,4 +1,5 @@
 ﻿
+
 namespace PresentationLayer.Controllers
 {
     [Authorize]
@@ -15,19 +16,19 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         [IgnoreAntiforgeryToken]
         [AllowAnonymous]
-        public IActionResult Index(string? searchName)
+        public async Task<IActionResult> Index(string? searchName)
         {
             var employees = Enumerable.Empty<Employee>();
             if (string.IsNullOrWhiteSpace(searchName))
-                employees = _unitOfWork.Employees.GetAllWithDepartments();
-            else employees = _unitOfWork.Employees.GetAll(searchName);
+                employees =await _unitOfWork.Employees.GetAllWithDepartmentsAsync();
+            else employees = await _unitOfWork.Employees.GetAllAsync(searchName);
             var employeesVM = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
             return View(employeesVM);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _unitOfWork.Departments.GetAll();
+            var departments = await _unitOfWork.Departments.GetAllAsync();
             SelectList items = new SelectList(departments, "Id", "Name");
             ViewBag.Departments = items;
             return View();
@@ -35,17 +36,17 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     if (employeeVM.Image is not null)
-                        employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
+                        employeeVM.ImageName =await DocumentSettings.UploadFileAsync(employeeVM.Image, "Images");
                     var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
-                    _unitOfWork.Employees.create(employee);
-                    _unitOfWork.SaveChanges();
+					await _unitOfWork.Employees.createAsync(employee);
+					await _unitOfWork.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -56,12 +57,12 @@ namespace PresentationLayer.Controllers
             return View(employeeVM);
         }
 
-        public IActionResult Details(int? id) => EmployeeControleerHandler(id, nameof(Details));
-        public IActionResult Edit(int? id) => EmployeeControleerHandler(id, nameof(Edit));
+        public async Task<IActionResult> Details(int? id) => await EmployeeControleerHandlerAsync(id, nameof(Details));
+        public async Task<IActionResult> Edit(int? id) => await EmployeeControleerHandlerAsync(id, nameof(Edit));
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, EmployeeViewModel employeeVM)
         {
             if (id != employeeVM.Id) return BadRequest();
             if (ModelState.IsValid)
@@ -69,10 +70,10 @@ namespace PresentationLayer.Controllers
                 try
                 {
                     if (employeeVM.Image is not null)
-                        employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
+                        employeeVM.ImageName = await DocumentSettings.UploadFileAsync(employeeVM.Image, "Images");
                     var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
                     _unitOfWork.Employees.Update(employee);
-                    if (_unitOfWork.SaveChanges() > 0)
+                    if (await _unitOfWork.SaveChangesAsync() > 0)
                     {
                         TempData["Message"] = $"Employee {employeeVM.Name} Updated Successfully";
                     }
@@ -86,21 +87,21 @@ namespace PresentationLayer.Controllers
             return View(employeeVM);
         }
 
-        public IActionResult Delete(int? id) => EmployeeControleerHandler(id, nameof(Delete));
+        public async Task<IActionResult> Delete(int? id) =>await EmployeeControleerHandlerAsync(id, nameof(Delete));
 
 
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmDelete(int? id)
+        public async Task<IActionResult> ConfirmDelete(int? id)
         {
             if (!id.HasValue) return BadRequest();
-            var employee = _unitOfWork.Employees.Get(id.Value);
+            var employee = await _unitOfWork.Employees.GetAsync(id.Value);
             if (employee == null) return NotFound();
             try
             {
                 _unitOfWork.Employees.Delete(employee);
-                if (_unitOfWork.SaveChanges() > 0 && employee.ImageName is not null)
+                if (await _unitOfWork.SaveChangesAsync() > 0 && employee.ImageName is not null)
                     DocumentSettings.DeleteFile("Images",employee.ImageName);   
                 return RedirectToAction(nameof(Index));
             }
@@ -108,19 +109,20 @@ namespace PresentationLayer.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
             }
-            return View(employee);
+            var employeeVM = _mapper.Map<EmployeeViewModel>(employee);
+            return View(employeeVM);
         }
 
-        public IActionResult EmployeeControleerHandler(int? id, string ViewName)
+        public async Task<IActionResult> EmployeeControleerHandlerAsync(int? id, string ViewName)
         {
             if (ViewName == nameof(Edit))
             {
-                var departments = _unitOfWork.Departments.GetAll();
+                var departments =await _unitOfWork.Departments.GetAllAsync();
                 SelectList items = new SelectList(departments, "Id", "Name");
                 ViewBag.Departments = items;
             }
             if (!id.HasValue) return BadRequest();
-            var employee = _unitOfWork.Employees.Get(id.Value);
+            var employee = await _unitOfWork.Employees.GetAsync(id.Value);
             //var employeeVM = _mapper.Map<Employee , EmployeeViewModel>(employee);
             var employeeVM = _mapper.Map<EmployeeViewModel>(employee);  //ممكن اكتبها كده عادي
             if (employee == null) return NotFound();
